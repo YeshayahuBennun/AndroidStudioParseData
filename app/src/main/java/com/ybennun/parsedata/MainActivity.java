@@ -1,5 +1,6 @@
 package com.ybennun.parsedata;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
@@ -14,6 +15,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class MainActivity extends AppCompatActivity {
@@ -28,13 +30,28 @@ public class MainActivity extends AppCompatActivity {
 
         queue = Volley.newRequestQueue(this);
 
-        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, apiUrl, null,
-                response -> Log.d("JSON", "onCreate: " + response.toString()),
-                error -> Log.d("JSON", "onCreate: Failed! "));
+        JsonArrayRequest jsonArrayRequest = getJsonArrayRequest();
 
         queue.add(jsonArrayRequest);
 
         getString(queue);
+    }
+
+    @NonNull
+    private JsonArrayRequest getJsonArrayRequest() {
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, apiUrl, null,
+                response -> {
+                    for (int i = 0; i < response.length(); i++) {
+                        try {
+                            JSONObject jsonObject = response.getJSONObject(i);
+                            Log.d("JSON", "onCreate: " + jsonObject.getString("title"));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                error -> Log.d("JSON", "onCreate: Failed! "));
+        return jsonArrayRequest;
     }
 
     private void getString(RequestQueue queue) {
