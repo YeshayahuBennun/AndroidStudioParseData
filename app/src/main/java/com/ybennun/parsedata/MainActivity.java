@@ -20,17 +20,19 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class MainActivity extends AppCompatActivity {
-    RequestQueue queue;
+    //RequestQueue queue;
     String url = "https://www.google.com";
     String apiUrl = "https://jsonplaceholder.typicode.com/todos";
     String getApiUrl = "https://jsonplaceholder.typicode.com/todos/1";
+    private RequestQueue queue;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        queue = Volley.newRequestQueue(this);
+        //queue = Volley.newRequestQueue(this);
+        queue = MySingleton.getInstance(this.getApplicationContext()).getRequestQueue();
         TextView textView = findViewById(R.id.textview);
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, getApiUrl, null,
@@ -46,7 +48,8 @@ public class MainActivity extends AppCompatActivity {
             Log.d("", "onCreate: Failed! ");
         });
 
-        queue.add(jsonObjectRequest);
+        queue.add(getJsonArrayRequest());
+        //queue.add(jsonObjectRequest);
         //getJsonArrayRequest();
 
 
